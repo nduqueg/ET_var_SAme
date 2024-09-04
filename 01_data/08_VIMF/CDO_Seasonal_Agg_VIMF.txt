@@ -1,0 +1,1 @@
+cdo seasmean ERA5_VIMF_eastNorth_1950-2020.nc ERA5_VIMF_eastNorth_seasonal.nc 

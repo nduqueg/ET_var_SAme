@@ -1,0 +1,1 @@
+cdo seasmean ERA5_u_v_850hPa-Atl_1950-2020.nc ERA5_u_v_850hPa-Atl_1950-2020_seasonal.nc

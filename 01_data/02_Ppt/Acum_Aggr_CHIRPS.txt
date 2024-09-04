@@ -1,0 +1,4 @@
+cdo sellonlatbox,-85,-30,-25,15 chirps-v2.0.monthly.nc CHIRPS_TropSAm_2023.nc
+cdo seasmean CHIRPS_TropSAm_2023.nc CHIRPS_TropSAm_seasonal_2023.nc
+cdo gridboxmean,5,5 CHIRPS_TropSAm_2023.nc CHIRPS_TropSAm_025_2023.nc
+cdo seasmean CHIRPS_TropSAm_025_2023.nc CHIRPS_TropSAm_025_seasonal_2023.nc

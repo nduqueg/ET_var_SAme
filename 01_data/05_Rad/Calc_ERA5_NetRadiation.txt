@@ -1,0 +1,2 @@
+cdo expr,'NetRad=(str+ssr)/86400;' -merge [ ERA5L_NetThermalRad_1950_2020.nc ERA5L_NetSolarRad_1950_2020.nc ] ERA5L_NetRad_1950-2020.nc
+cdo seasmean ERA5L_NetRad_1950-2020.nc ERA5L_NetRad_seasonal.nc

@@ -1,0 +1,1 @@
+cdo seasmean ERA5L_SM_1L_1950-2020.nc ERA5L_SM_1L_seasonal.nc

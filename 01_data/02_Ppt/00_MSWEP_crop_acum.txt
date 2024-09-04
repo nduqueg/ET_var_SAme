@@ -1,0 +1,18 @@
+Rscript
+
+files <- list.files(path="./MSWEP_world/",pattern=".nc")
+ext <- extent(-85,-30,-25,20) # Rectangule between -20 to 15Â°N and -82 to -40Â°W
+
+setwd("./MSWEP_world/")
+pb <- txtProgressBar(min = 0,max=length(files),style = 3)
+for ( i in 1:length(files)){
+  setTxtProgressBar(pb,i)
+  infile <- paste0(files[i]); outfile <- paste0("../MSWEP_TropSAm/",files[i])
+  cdo.cmd <- paste0("cdo -sellonlatbox,",ext[1],",",ext[2],",",ext[3],",",ext[4]," ",infile," ",outfile)
+  system(cdo.cmd)
+}
+close(pb)
+setwd("../MSWEP_TropSAm/")
+cdo.cmd <- "cdo mergetime *.nc ../MSWEP_Ppt_1979_2020_cdo.nc"
+system(cdo.cmd)
+setwd("..")
