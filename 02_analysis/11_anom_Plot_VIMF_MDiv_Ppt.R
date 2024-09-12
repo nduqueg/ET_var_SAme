@@ -24,16 +24,16 @@ D.e5 <-seq(as.Date("1950-01-01"),as.Date("2020-12-31"),by="month")
 Dm.sst <- seq(as.Date("1885-01-01"),as.Date("2020-12-30"),by="month")
 
 ## loading ----
-basins <- shapefile("../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
+basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
 
 VIMF.anom <- list(); MDiv.anom <- list(); Ppt.anom <- list()
-load("./01_VIMF/01_AnomComp_Atl3_VIMF.RData"); VIMF.anom[["Atl3"]] <- data.anom; rm(data.anom)
-load("./02_VIMFDiv/02_Atl3_divVIM.RData"); MDiv.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
-load("./03_Ppt/03_Atl3_Comp_Ppt.RData"); Ppt.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
+load("./01_data/08_VIMF/01_AnomComp_Atl3_VIMF.RData"); VIMF.anom[["Atl3"]] <- data.anom; rm(data.anom)
+load("./01_data/09_MDiv/02_Atl3_divVIM.RData"); MDiv.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
+load("./01_data/02_Ppt/03_Atl3_Comp_Ppt.RData"); Ppt.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
 
-load("./01_VIMF/01_AnomComp_AMM_VIMF.RData"); VIMF.anom[["AMM"]] <- data.anom; rm(data.anom)
-load("./02_VIMFDiv/02_AMM_divVIM.RData"); MDiv.anom[["AMM"]] <- data.anom2; rm(data.anom2)
-load("./03_Ppt/03_AMM_Comp_Ppt.RData"); Ppt.anom[["AMM"]] <- data.anom2; rm(data.anom2)
+load("./01_data/08_VIMF/01_AnomComp_AMM_VIMF.RData"); VIMF.anom[["AMM"]] <- data.anom; rm(data.anom)
+load("./01_data/09_MDiv/02_AMM_divVIM.RData"); MDiv.anom[["AMM"]] <- data.anom2; rm(data.anom2)
+load("./01_data/02_Ppt/03_AMM_Comp_Ppt.RData"); Ppt.anom[["AMM"]] <- data.anom2; rm(data.anom2)
 
 Test.comp <- list()
 VIMF.mag.test <- function(Mt.E.test, Mt.N.test, lev.sig = 0.05){
@@ -50,11 +50,11 @@ VIMF.mag.test <- function(Mt.E.test, Mt.N.test, lev.sig = 0.05){
   Mt.Mag.test <- lapply( Mt.Mag.test,`colnames<-`, c("lon", "lat","Season","p.value"))
   return( Mt.Mag.test)
 }
-load("./01_VIMF/02_VIMF_AMM_Comp_Ttest_uv.RData")
+load("./01_data/08_VIMF/02_VIMF_AMM_Comp_Ttest_uv.RData")
 Test.comp[["AMM"]] <- VIMF.mag.test(Mt.E.test, Mt.N.test, lev.sig = 0.1)
 
 cord <- Mt.E.test$Pos[,c("lon","lat")]
-load("./01_VIMF/02_VIMF_Atl3_Comp_Ttest_uv.RData")
+load("./01_data/08_VIMF/02_VIMF_Atl3_Comp_Ttest_uv.RData")
 Test.comp[["Atl3"]] <- VIMF.mag.test(Mt.E.test, Mt.N.test, lev.sig = 0.1)
 
 ### selection VIMF for ease visualization----

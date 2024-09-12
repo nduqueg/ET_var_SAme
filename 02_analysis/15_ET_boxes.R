@@ -33,15 +33,15 @@ Year.s.e5r <- Year_s(Dates.e5r)$Year.s
 
 ## load data ----
 # cdo seassum ERA5L_Ppt_1979_2020_cdo.nc ERA5L_Ppt_1979_2020_seasonal.nc
-E5.s <- brick("03_detrended_ET_ERA5L_seasonal_1980_2020.nc")
-GLEAM.s <- brick("03_detrended_ET_GLEAM_seasonal_1980_2020.nc"); GLEAM.s[[1]] <- GLEAM.s[[1]]*3/2 # add the Dec-1979 as the average of Jan & Feb-1980
-Rn.s <- brick("../../../01_DataSets/05_SRad/ERA5L_NetRad_seasonal.nc")
-SM.s <- brick("../../../01_DataSets/03_SM/01_ERA5L/ERA5L_SM_1L_seasonal.nc")
+E5.s <- brick("./01_data/04_Evap/03_detrended_ET_ERA5L_seasonal_1980_2020.nc")
+GLEAM.s <- brick("./01_data/04_Evap/03_detrended_ET_GLEAM_seasonal_1980_2020.nc"); GLEAM.s[[1]] <- GLEAM.s[[1]]*3/2 # add the Dec-1979 as the average of Jan & Feb-1980
+Rn.s <- brick("./01_data/05_Rad/ERA5L_NetRad_seasonal.nc")
+SM.s <- brick("./01_data/03_SM/ERA5L_SM_1L_seasonal.nc")
 
 # sst standardize indices
-AMM.seasons <- read.csv("../../03_Composites/AMM_std_1980-2020.csv"); colnames(AMM.seasons)[1] <- "Years"
-Atl3.seasons <- read.csv("../../03_Composites/Atl3_std_1980-2020.csv"); colnames(Atl3.seasons)[1] <- "Years"
-ELI.s <- read.csv("../../03_Composites/ELI_std_1980-2020_ERSST.csv"); colnames(ELI.s)[1] <- "Years"
+AMM.seasons <- read.csv("./01_data/01_SSTindices/AMM_std_1980-2020.csv"); colnames(AMM.seasons)[1] <- "Years"
+Atl3.seasons <- read.csv("./01_data/01_SSTindices/Atl3_std_1980-2020.csv"); colnames(Atl3.seasons)[1] <- "Years"
+ELI.s <- read.csv("./01_data/01_SSTindices/ELI_std_1980-2020_ERSST.csv"); colnames(ELI.s)[1] <- "Years"
 
 ## crop 1980 - onwards ----
 E5.s <- E5.s[[match(Year.s, Year.s.e5)]]
@@ -52,12 +52,12 @@ SM.s <- SM.s[[match(Year.s, Year.s.e5r)]]
 
 #### identification of SM saturation ----
 cord <- list()
-f2 <- nc_open("../../../01_DataSets/03_SM/01_ERA5L/ERA5L_SM_1L_1950-2020.nc")
+f2 <- nc_open("./01_data/03_SM/ERA5L_SM_1L_1950-2020.nc")
 lon <- f2$dim[[which(names(f2$dim)=="longitude" | names(f2$dim)=="lon") ]]$vals; lat <- f2$dim[[which(names(f2$dim)=="latitude" | names(f2$dim)=="lat" )]]$vals
 cord[["E5"]] <- expand.grid(lon=lon, lat=lat)
 
 # Soils
-fsoil <- nc_open("../../../01_DataSets/01_ERA5L_soil_type.nc")
+fsoil <- nc_open("./01_data/01_ERA5L_soil_type.nc")
 E5.soil <- ncvar_get(fsoil, varid="slt")
 lon <- fsoil$dim[[which(names(fsoil$dim)=="longitude" | names(fsoil$dim)=="lon") ]]$vals; lon[lon>=180] <- lon[lon>=180] - 360
 lat <- fsoil$dim[[which(names(fsoil$dim)=="latitude" | names(fsoil$dim)=="lat" )]]$vals

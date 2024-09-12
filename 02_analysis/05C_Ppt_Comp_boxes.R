@@ -29,13 +29,13 @@ Year.s.ms <- unique(Season.y.ms)
 
 ## load data ----
 # cdo seassum MSWEP_Ppt_1979_2020_cdo.nc MSWEP_Ppt_1979_2020_seasonal.nc
-MS.s <- brick("../../../01_DataSets/02_Ppt/01_MSWEP/MSWEP_Ppt_1979_2020_seasonal.nc")
-CHIRPS.s <- brick("../../../01_DataSets/02_Ppt/05_CHIRPS/CHIRPS_TropSAm_seasonal_2023.nc")
+MS.s <- brick("./01_data/02_Ppt/MSWEP_Ppt_1979_2020_seasonal.nc")
+CHIRPS.s <- brick("./01_data/02_Ppt/CHIRPS_TropSAm_seasonal_2023.nc")
 
 # sst standardize indices
-AMM.seasons <- read.csv("../AMM_std_1980-2020.csv"); row.names(AMM.seasons) <- AMM.seasons[,1]; AMM.seasons <- AMM.seasons[,-1]
-Atl3.seasons <- read.csv("../Atl3_std_1980-2020.csv"); row.names(Atl3.seasons) <- Atl3.seasons[,1]; Atl3.seasons <- Atl3.seasons[,-1]
-ELI.seasons <- read.csv("../ELI_std_1980-2020.csv"); row.names(ELI.seasons) <- ELI.seasons[,1]; ELI.seasons <- ELI.seasons[,-1]
+AMM.seasons <- read.csv("./01_data/01_SSTindices/AMM_std_1980-2020.csv"); row.names(AMM.seasons) <- AMM.seasons[,1]; AMM.seasons <- AMM.seasons[,-1]
+Atl3.seasons <- read.csv("./01_data/01_SSTindices/Atl3_std_1980-2020.csv"); row.names(Atl3.seasons) <- Atl3.seasons[,1]; Atl3.seasons <- Atl3.seasons[,-1]
+ELI.seasons <- read.csv("./01_data/01_SSTindices/ELI_std_1980-2020.csv"); row.names(ELI.seasons) <- ELI.seasons[,1]; ELI.seasons <- ELI.seasons[,-1]
 
 ## crop 1980 - onwards ----
 MS.s <- MS.s[[match(Year.s, Year.s.ms)]]

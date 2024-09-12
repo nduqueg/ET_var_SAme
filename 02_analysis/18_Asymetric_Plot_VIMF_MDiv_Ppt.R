@@ -24,13 +24,13 @@ Dm.sst <- seq(as.Date("1885-01-01"),as.Date("2020-12-30"),by="month")
 
 ## loading ----
 VIMF.anom <- list(); MDiv.anom <- list(); Ppt.anom <- list()
-load("./01_VIMF/01_AnomComp_Atl3_VIMF_uv.RData"); VIMF.anom[["Atl3"]] <- data.anom.uv; rm(data.anom.uv)
-load("./02_VIMFDiv/02_Atl3_divVIM.RData"); MDiv.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
-load("./03_Ppt/03_Atl3_Comp_Ppt.RData"); Ppt.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
+load("./01_data/08_VIMF/01_AnomComp_Atl3_VIMF_uv.RData"); VIMF.anom[["Atl3"]] <- data.anom.uv; rm(data.anom.uv)
+load("./01_data/09_MDiv/02_Atl3_divVIM.RData"); MDiv.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
+load("./01_data/02_Ppt/03_Atl3_Comp_Ppt.RData"); Ppt.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
 
-load("./01_VIMF/01_AnomComp_AMM_VIMF_uv.RData"); VIMF.anom[["AMM"]] <- data.anom.uv; rm(data.anom.uv)
-load("./02_VIMFDiv/02_AMM_divVIM.RData"); MDiv.anom[["AMM"]] <- data.anom2; rm(data.anom2)
-load("./03_Ppt/03_AMM_Comp_Ppt.RData"); Ppt.anom[["AMM"]] <- data.anom2; rm(data.anom2)
+load("./01_data/08_VIMF/01_AnomComp_AMM_VIMF_uv.RData"); VIMF.anom[["AMM"]] <- data.anom.uv; rm(data.anom.uv)
+load("./01_data/09_MDiv/02_AMM_divVIM.RData"); MDiv.anom[["AMM"]] <- data.anom2; rm(data.anom2)
+load("./01_data/02_Ppt/03_AMM_Comp_Ppt.RData"); Ppt.anom[["AMM"]] <- data.anom2; rm(data.anom2)
 
 ### selection VIMF for ease visualization----
 
@@ -104,7 +104,7 @@ cal.asym.MDiv <- function(MDiv.Anom){
 MDiv.asym.p <- lapply(MDiv.anom, cal.asym.MDiv)
 
 #### plotting -----
-basins <- shapefile("../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
+basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
 
 plotting.asym <- function ( VIMF.asym, MDiv.asym, Ppt.asym, Spe.season, title.p, xlim=c(-82,-40), ylim=c(-20,13), l.pos="bottom", y.axis=TRUE, x.axis=TRUE){
   # data.asym must be the dataFrame, not the whole list

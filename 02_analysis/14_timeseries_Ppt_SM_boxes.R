@@ -30,14 +30,14 @@ Year.s.e5 <- unique(Season.y.e5)
 
 ## load data ----
 # cdo seassum ERA5L_Ppt_1979_2020_cdo.nc ERA5L_Ppt_1979_2020_seasonal.nc
-E5.s <- brick("../../01_DataSets/03_SM/01_ERA5L/ERA5L_SM_1L_seasonal.nc")
-ESA.s <- brick("../../01_DataSets/03_SM/03_ESA_CCI_SM/ESACCI_SM_seasonal_80-DJF_20-SON.nc")
-P.s <- brick("../../01_DataSets/02_Ppt/01_MSWEP/MSWEP_Ppt_1979_2020_seasonal.nc")
+E5.s <- brick("./01_data/03_SM/ERA5L_SM_1L_seasonal.nc")
+ESA.s <- brick("./01_data/03_SM/ESACCI_SM_seasonal_80-DJF_20-SON.nc")
+P.s <- brick("./01_data/02_Ppt/MSWEP_Ppt_1979_2020_seasonal.nc")
 
 # sst standardize indices
-AMM.seasons <- read.csv("../../03_SpatioTemp/03_Composites/AMM_std_1980-2020.csv"); colnames(AMM.seasons)[1] <- "Years"
-Atl3.seasons <- read.csv("../../03_SpatioTemp/03_Composites/Atl3_std_1980-2020.csv"); colnames(Atl3.seasons)[1] <- "Years"
-ELI.s <- read.csv("../../03_SpatioTemp/03_Composites/ELI_std_1980-2020_ERSST.csv"); colnames(ELI.s)[1] <- "Years"
+AMM.seasons <- read.csv("./01_data/01_SSTindices/AMM_std_1980-2020.csv"); colnames(AMM.seasons)[1] <- "Years"
+Atl3.seasons <- read.csv("./01_data/01_SSTindices/Atl3_std_1980-2020.csv"); colnames(Atl3.seasons)[1] <- "Years"
+ELI.s <- read.csv("./01_data/01_SSTindices/ELI_std_1980-2020_ERSST.csv"); colnames(ELI.s)[1] <- "Years"
 
 ## crop 1980 - onwards ----
 P.s <- P.s[[match(Year.s, Year.s.ms)]]

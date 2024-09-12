@@ -15,14 +15,14 @@ Dm.e <- seq(as.Date("1854-01-01"),as.Date("2020-12-31"),by="month")
 Dm.ana <- seq(as.Date("1885-01-01"),as.Date("2020-12-30"),by="month")
 
 # load data ####
-E.sst <- brick("../01_ERSSTv5/Anom_ersst_v5_1854_2020.nc")
+E.sst <- brick("./00_preprocess/Anom_ersst_v5_1854_2020.nc")
 E.sst.t <- rasterToPoints(E.sst); E.sst.t[E.sst.t[,1]>=180 ,1] <- E.sst.t[E.sst.t[,1]>=180,1] -360
 E.sst <- rasterFromXYZ(E.sst.t)
 E.sst.Gmean <- zoo(cellStats(E.sst ,stat="mean",na.rm=T), order.by = Dm.e)
 
 {
-  aux <- read.csv("../co2_mm_mlo.csv",skip=56); CO2.maunaloa <- zoo(aux[,c("average","deseasonalized")], order.by = as.Date(paste0(aux$year,"-",aux$month,"-01")))
-  aux <- read.table("../Meure et al - CO2 concentration",skip=56); aux2 <- aux[match(unique(aux[,2]),aux[,2]),]; for(i in 1:nrow(aux2)){aux2[i,3] <- mean(aux[aux[,2]==aux2[i,2],3])}
+  aux <- read.csv("./00_preprocess/co2_mm_mlo.csv",skip=56); CO2.maunaloa <- zoo(aux[,c("average","deseasonalized")], order.by = as.Date(paste0(aux$year,"-",aux$month,"-01")))
+  aux <- read.table("./00_preprocess/Meure et al - CO2 concentration",skip=56); aux2 <- aux[match(unique(aux[,2]),aux[,2]),]; for(i in 1:nrow(aux2)){aux2[i,3] <- mean(aux[aux[,2]==aux2[i,2],3])}
   
   CO2.ice <- zoo(aux2[,3], order.by = as.Date(paste0(floor(aux2[,2]),"-0",
                                                     round((aux2[,2]-floor(aux2[,2]))*10+1,0),
@@ -109,7 +109,7 @@ Atl3 <- rasterToPoints(E.sst.Atl[[which(Dm.ana2=="1974-06-01")]])
 
 d.SST <- merge.data.frame(AMM,Atl3); colnames(d.SST)[3:4] <- c("AMM","Atl3"); d.SST <- melt(d.SST,id=c("x","y"))
 
-world <- shapefile("../../South_America/World_Continents.shp")
+world <- shapefile("./01_data/World_Continents.shp")
 
 at.m <- round(seq(-1.5,1.5,length.out=12),1)
 rec.df <- data.frame(xmi=c(-70,-40,-20),

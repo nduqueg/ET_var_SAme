@@ -24,7 +24,7 @@ a<-list.files(path=dist.dir, pattern = ".nc")
 SST <- stack(paste0(dist.dir,a),varname="sst")
 SSTa <- stack(paste0(dist.dir,a),varname="ssta")
 
-writeRaster(SST,filename = "1_ersst_v5_1854_2020.nc",format="CDF")
-writeRaster(SSTa,filename = "Anom_ersst_v5_1854_2020.nc",format="CDF")
+writeRaster(SST,filename = "./00_preprocess/1_ersst_v5_1854_2020.nc",format="CDF")
+writeRaster(SSTa,filename = "./00_preprocess/Anom_ersst_v5_1854_2020.nc",format="CDF")
 
 file.remove(dist.dir)

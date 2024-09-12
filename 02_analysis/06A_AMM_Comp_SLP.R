@@ -19,7 +19,7 @@ Season.y <- paste0(years.m[-1],"-",time2season(Dates.a)[-length(Dates.a)])
 Year.s <- unique(Season.y)
   
 ## load data -----
-P <- brick("../../../01_DataSets/07A_SLP/02_ERA5/ERA5_SLP_1959-2020_crop.nc")
+P <- brick("./01_data/07_SLP/ERA5_SLP_1959-2020_crop.nc")
 Mask.c<- P[[1]]*0+1
 cord <- rasterToPoints(P[[1]])[,c(1,2)] 
 sele <- match(Dates.a, Dates.ms)[!is.na(match(Dates.a, Dates.ms))]
@@ -31,7 +31,7 @@ P <- P[[sele]]
 # ELI.s <- read.csv("../../01_DataSets/01_SST/02_Indices/ELI_s_1854_2019.csv")
 # ELI.s <- ELI.s[match(Year.s,ELI.s$X),]
 
-AMM <- read.zoo(read.csv("../../../01_DataSets/01_SST/04_Cal_Indices/00A_AMM_deltaSST.csv")[,c(1,3)], 
+AMM <- read.zoo(read.csv("./01_data/01_SSTindices/00A_AMM_deltaSST.csv")[,c(1,3)], 
                 index.column = 1); AMM <- AMM[Dates.a]
 
 # Atl3 <- read.zoo(read.csv("../../01_DataSets/01_SST/04_Cal_Indices/00A_AtlEN_SST.csv")[,c(1,3)], 
@@ -81,7 +81,7 @@ AMM.seasons[   ,"SON"] <- AMM.s[which(substr(index(AMM.s),6,8) == "SON")]
 
 #### identifying periods of high and low AMM --------
 AMM.bool <- list()
-AMM.seasons <- read.csv("../AMM_std_1980-2020.csv"); row.names(AMM.seasons) <- AMM.seasons[,1]; AMM.seasons <- AMM.seasons[,-1]
+AMM.seasons <- read.csv("./01_data/01_SSTindices/AMM_std_1980-2020.csv"); row.names(AMM.seasons) <- AMM.seasons[,1]; AMM.seasons <- AMM.seasons[,-1]
 #---------------------------------------------------------------------- identification of periods with SST higher than 0.5 & lower than -0.5
 {
   AMM.bool[["Pos"]] <- data.frame(matrix(FALSE, ncol=4, nrow= length(Years))); colnames(AMM.bool[["Pos"]]) <- seasons; rownames(AMM.bool[["Pos"]]) <- Years
@@ -92,7 +92,7 @@ AMM.seasons <- read.csv("../AMM_std_1980-2020.csv"); row.names(AMM.seasons) <- A
   AMM.bool[["Neg"]][which(AMM.seasons <=-1, arr.ind = T)] <- TRUE
 
   a <- t(sapply(AMM.bool,function(x){apply(x,2,sum)}))
-  write.csv(a,"AMM_events_1980-2020.csv")
+  write.csv(a,"./01_data/07_SLP/AMM_events_1980-2020.csv")
 }
 
 #--------------------------------------------------------------------------- initialization of datasets
@@ -124,7 +124,7 @@ data.anom <- list()
 }
 
 data.anom2 <- rbind(data.anom[["Pos"]], data.anom[["Neg"]])
-save(data.anom2,"data.anom2",file="03_AMM_Comp_SLP.RData")
+save(data.anom2,"data.anom2",file="./01_data/07_SLP/03_AMM_Comp_SLP.RData")
 
 #### plotting the map ####
 library(maps);library(mapdata)

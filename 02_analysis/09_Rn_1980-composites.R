@@ -29,7 +29,7 @@ cord <- list()
 
 # cdo expr,NetRad=(str+ssr)/86400; -merge [ ERA5L_NetThermalRad_1950_2020.nc ERA5L_NetSolarRad_1950_2020.nc ] ERA5L_NetRad_1950-2020.nc
 # cdo seasmean ERA5L_NetRad_1950-2020.nc ERA5L_NetRad_seasonal.nc
-f2 <- nc_open("../../../01_DataSets/05_SRad/ERA5L_NetRad_seasonal.nc") # already transformed to W/m2
+f2 <- nc_open("./01_data/05_Rad/ERA5L_NetRad_seasonal.nc") # already transformed to W/m2
 
 E5.s <- ncvar_get(f2, varid = "NetRad") # To convert to watts per square metre (W m-2), the accumulated values should be divided by the accumulation period expressed in seconds.
 # Monthly means of mean daily fluxes, The accumulations in monthly means of daily means have been scaled to have units that include "per day"
@@ -40,8 +40,8 @@ cord[["E5"]] <- expand.grid(lon=lon, lat=lat)
 
 
 # SSTs
-AMM <- read.zoo(read.csv("../../03_Composites/AMM_std_1980-2020.csv"),index.column = 1)
-Atl3 <- read.zoo(read.csv("../../03_Composites/Atl3_std_1980-2020.csv"),index.column = 1)
+AMM <- read.zoo(read.csv("./01_data/01_SSTindices/AMM_std_1980-2020.csv"),index.column = 1)
+Atl3 <- read.zoo(read.csv("./01_data/01_SSTindices/Atl3_std_1980-2020.csv"),index.column = 1)
 
 #### crop 1980 - onwards & seasonal mean ####
 E5.s <- E5.s[,,match(Year.s,Year.s.e5)]
@@ -97,8 +97,8 @@ Comp.E5 <- lapply(Comp.E5, SM.Comp.org, cord[["E5"]])
 Test.comp.E5 <- lapply(Test.comp.E5, SM.Comp.org, cord[["E5"]])
 
 
-save(Comp.E5, list=c("Comp.E5"), file="Radiation_Composites.RData")
-save(Test.comp.E5, list=c("Test.comp.E5"), file="Radiation_Composites_Ttest.RData")
+save(Comp.E5, list=c("Comp.E5"), file="./01_data/05_Rad/Radiation_Composites.RData")
+save(Test.comp.E5, list=c("Test.comp.E5"), file="./01_data/05_Rad/Radiation_Composites_Ttest.RData")
 
 #### seasonal plotting ####
 library(reshape)
@@ -106,8 +106,8 @@ library(ggplot2)
 library(raster)
 library(RColorBrewer)
 
-load("Radiation_Composites.RData")
-load("Radiation_Composites_Ttest.RData")
+load("./01_data/05_Rad/Radiation_Composites.RData")
+load("./01_data/05_Rad/Radiation_Composites_Ttest.RData")
 seasons <- c("DJF","MAM","JJA","SON")
 
 
@@ -144,8 +144,8 @@ shape.sig$Season <- factor(shape.sig$Season, levels = seasons); shape.sig$Phase 
 
 library(ggpattern)
 library(sf)
-Basins <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
-SA <- shapefile("../../../01_DataSets/South_America/South_America.shp")
+Basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data/South_America.shp")
 
 # organizing the composites
 data <- melt(Comp.E5, id=c("lon","lat")); data$dataset <- "ERA5L"; data <- data[!is.nan(data$value),]

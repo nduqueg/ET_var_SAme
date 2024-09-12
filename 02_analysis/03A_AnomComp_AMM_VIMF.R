@@ -26,15 +26,15 @@ seasons <- c("DJF","MAM","JJA","SON")
 
 Dm.sst <- seq(as.Date("1885-01-01"),as.Date("2020-12-30"),by="month")
 ## loading files ####
-dir.mf <- "../../../01_DataSets/10_VIMF/"
+dir.mf <- "./01_data/08_VIMF/"
 
 # cdo seasmean ERA5_VIMF_eastNorth_1950-2020.nc ERA5_VIMF_eastNorth_seasonal.nc
 Mt.e.s <- brick(paste0(dir.mf,"ERA5_VIMF_eastNorth_seasonal.nc"),varname="p71.162"); Mt.e.s <- Mt.e.s[[match(Year.s,Year.s.e5)]]
 Mt.n.s <- brick(paste0(dir.mf,"ERA5_VIMF_eastNorth_seasonal.nc"),varname="p72.162"); Mt.n.s <- Mt.n.s[[match(Year.s,Year.s.e5)]]
 
-basins <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
+basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
 
-AMM <- read.zoo(read.csv("../../../01_DataSets/01_SST/04_Cal_Indices/00A_AMM_deltaSST.csv")[,-2], index.column = 1); AMM <- AMM[dates.m]
+AMM <- read.zoo(read.csv("./01_data/01_SSTindices/00A_AMM_deltaSST.csv")[,-2], index.column = 1); AMM <- AMM[dates.m]
 
 ## seasonal preprocessing ----
 #------------------------------------------------------------------ VIMF seasonal separation
@@ -78,7 +78,7 @@ for(i in seasons){
 #------------------------------------------------------------------ SST accummulation to seasons and separation
 {
   # AMM.s <- aggregate(AMM[-length(AMM)], by= list(Season.y), FUN= mean)
-  AMM.seasons <- read.csv("../AMM_std_1980-2020.csv")[,-1]
+  AMM.seasons <- read.csv("./01_data/01_SSTindices/AMM_std_1980-2020.csv")[,-1]
 }#--------- SST accummulation to seasons and separation
 
 #### identification of periods SST higher and lower than 1*SD --------
@@ -113,7 +113,7 @@ AMM.bool[["Pos"]][which(AMM.seasons >=1, arr.ind = T)] <- TRUE}
   AMM.bool[["Neg"]][which(AMM.seasons <=-1, arr.ind = T)] <- TRUE}
 
 a <- t(sapply(AMM.bool,function(x){apply(x,2,sum)}))
-write.csv(a,"AMM_events_1980-2020.csv")
+write.csv(a,"./01_data/08_VIMF/AMM_events_1980-2020.csv")
 
 
 Test.comp.f <- function(Phase, neutral){
@@ -161,8 +161,8 @@ Mt.E.test <- lapply(Mt.E.test, cbind, Coord)
 Mt.N.test <- lapply(Mt.N.test, cbind, Coord)
 
 data.anom.uv <- list(Mt.E.anom= Mt.E.anom, Mt.N.anom= Mt.N.anom)
-save(data.anom.uv,"data.anom.uv",file="01_AnomComp_AMM_VIMF_uv.RData")
-save(Mt.E.test, Mt.N.test, list=c("Mt.E.test","Mt.N.test"), file="02_VIMF_AMM_Comp_Ttest_uv.RData")
+save(data.anom.uv,"data.anom.uv",file="./01_data/08_VIMF/01_AnomComp_AMM_VIMF_uv.RData")
+save(Mt.E.test, Mt.N.test, list=c("Mt.E.test","Mt.N.test"), file="./01_data/08_VIMF/02_VIMF_AMM_Comp_Ttest_uv.RData")
 ##### Data transformation for plotting ------
 #------------------------------------------------------------------------ Seasonal mean transformation
 {
@@ -195,7 +195,7 @@ data.anom <- list()
   colnames(data.anom[["Neg"]]) <- c("lon", "lat","Season","Angle","Anomaly")
 }
 
-save(data.anom,"data.anom",file="01_AnomComp_AMM_VIMF.RData")
+save(data.anom,"data.anom",file="./01_data/08_VIMF/01_AnomComp_AMM_VIMF.RData")
 
 #### plotting ----
 paleta <- c(brewer.pal(9,"YlGnBu"),"#81007F"); paleta[1:3] <- c("#9e0142","#f46d43","#fad366")

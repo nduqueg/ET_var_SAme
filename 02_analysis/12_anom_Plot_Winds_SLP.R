@@ -23,16 +23,16 @@ D.e5 <-seq(as.Date("1950-01-01"),as.Date("2020-12-31"),by="month")
 Dm.sst <- seq(as.Date("1885-01-01"),as.Date("2020-12-30"),by="month")
 
 ## loading ----
-basins <- shapefile("../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
-countries <- shapefile("../../01_DataSets/South_America/South_America.shp")
+basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
+countries <- shapefile("./01_data/South_America.shp")
 
 WIND.anom <- list(); MDiv.anom <- list(); SLP.anom <- list()
-load("./05_Winds/01_AnomComp_AMM_Winds.RData"); WIND.anom[["AMM"]] <- data.anom; rm(data.anom)
-load("./04_SLP/03_AMM_Comp_SLP.RData"); SLP.anom[["AMM"]] <- data.anom2; rm(data.anom2)
+load("./01_data/06_Wind/01_AnomComp_AMM_Winds.RData"); WIND.anom[["AMM"]] <- data.anom; rm(data.anom)
+load("./01_data/07_SLP/03_AMM_Comp_SLP.RData"); SLP.anom[["AMM"]] <- data.anom2; rm(data.anom2)
 SLP.anom[["AMM"]]$lon[SLP.anom[["AMM"]]$lon>=180] <- SLP.anom[["AMM"]]$lon[SLP.anom[["AMM"]]$lon>=180] - 360
 
-load("./05_Winds/01_AnomComp_Atl3_Winds.RData"); WIND.anom[["Atl3"]] <- data.anom; rm(data.anom)
-load("./04_SLP/03_Atl3_Comp_SLP.RData"); SLP.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
+load("./01_data/06_Wind/01_AnomComp_Atl3_Winds.RData"); WIND.anom[["Atl3"]] <- data.anom; rm(data.anom)
+load("./01_data/07_SLP/03_Atl3_Comp_SLP.RData"); SLP.anom[["Atl3"]] <- data.anom2; rm(data.anom2)
 SLP.anom[["Atl3"]]$lon[SLP.anom[["Atl3"]]$lon>=180] <- SLP.anom[["Atl3"]]$lon[SLP.anom[["Atl3"]]$lon>=180] - 360
 
 ### selection WIND for ease visualization----

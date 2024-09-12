@@ -20,7 +20,7 @@ Year.s <- unique(Season.y)
   
 ## load data -----
 # MDiv <- brick("../../../01_DataSets/11_VIMFDiv/ERA5_VIMFdiv_1950-2020.nc")
-MDiv <- brick("../../../01_DataSets/11_VIMFDiv/ERA5_Mdiv_1950-2020.nc")
+MDiv <- brick("./01_data/09_MDiv/ERA5_Mdiv_1950-2020.nc")
 MDiv <- aggregate(MDiv,2)
 MDiv.t <- rasterToPoints(MDiv); cord <- MDiv.t[,c(1,2)]
 Mask.c<- MDiv[[1]]*0+1
@@ -32,7 +32,7 @@ MDiv <- MDiv[[match(Dates.a, Dates.e5)]]
 # ELI.s <- read.csv("../../01_DataSets/01_SST/02_Indices/ELI_s_1854_2019.csv")
 # ELI.s <- ELI.s[match(Year.s,ELI.s$X),]
 
-AMM <- read.zoo(read.csv("../../../01_DataSets/01_SST/04_Cal_Indices/00A_AMM_deltaSST.csv")[,c(1,3)], 
+AMM <- read.zoo(read.csv("./01_data/01_SSTindices/00A_AMM_deltaSST.csv")[,c(1,3)], 
                 index.column = 1); AMM <- AMM[Dates.a]
 
 # Atl3 <- read.zoo(read.csv("../../01_DataSets/01_SST/04_Cal_Indices/00A_AtlEN_SST.csv")[,c(1,3)], 
@@ -66,7 +66,7 @@ for ( i in seasons) DIVa.seasons[[i]] <- apply(t(Col.s.t[, which(substr(Year.s,6
 
 #### identifying periods of high and low AMM --------
 AMM.bool <- list()
-AMM.seasons <- read.csv("../AMM_std_1980-2020.csv"); row.names(AMM.seasons) <- AMM.seasons[,1]; AMM.seasons <- AMM.seasons[,-1]
+AMM.seasons <- read.csv("./01_data/01_SSTindices/AMM_std_1980-2020.csv"); row.names(AMM.seasons) <- AMM.seasons[,1]; AMM.seasons <- AMM.seasons[,-1]
 #---------------------------------------------------------------------- identification of periods with SST higher than 1*SD & lower than -1*SD
 {
   AMM.bool[["Pos"]] <- matrix(FALSE, nrow = length(Years),ncol=4); colnames(AMM.bool[["Pos"]]) <- seasons
@@ -81,7 +81,7 @@ AMM.seasons <- read.csv("../AMM_std_1980-2020.csv"); row.names(AMM.seasons) <- A
   AMM.bool[["Neg"]][which(AMM.seasons <=-1.0, arr.ind = T)] <- TRUE
   
   a <- t(sapply(AMM.bool,function(x){apply(x,2,sum)}))
-  write.csv(a,"AMM_events_1980-2020.csv")
+  write.csv(a,"./01_data/09_MDiv/AMM_events_1980-2020.csv")
 }
 
 #--------------------------------------------------------------------------- initialization of datasets
@@ -133,12 +133,12 @@ Test.comp.E5 <- lapply(Test.comp.E5, function(x) do.call(cbind,x))
 
 data.anom2 <- do.call(rbind, data.anom); data.anom2$Dir <- factor(data.anom2$Dir, levels = c("Pos","Neg"))
 
-save(data.anom2,"data.anom2",file="02_AMM_divVIM.RData")
-save(Test.comp.E5,"Test.comp.E5",file="03_divVIM_AMM_Comp_Ttest.RData")
+save(data.anom2,"data.anom2",file="./01_data/09_MDiv/02_AMM_divVIM.RData")
+save(Test.comp.E5,"Test.comp.E5",file="./01_data/09_MDiv/03_divVIM_AMM_Comp_Ttest.RData")
 
 
 #### plotting the map ####
-SA <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data//hybas_sa_lev03_v1c.shp")
 
 
 

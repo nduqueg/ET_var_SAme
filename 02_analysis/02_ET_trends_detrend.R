@@ -9,13 +9,13 @@ Dates  <- seq(as.Date("1979-12-01"),as.Date("2020-11-30"), by="month")
 date.ini <- format(Dates[1],format="%Y-%m-%d"); date.end <- format(Dates[length(Dates)],format="%Y-%m-%d")
 
 # identifying trends ERA5-Land ----
-ifile <- "../../../01_DataSets/04_Evap/02_ERA5L/ERA5L_TEvap_1950_2020.nc"
-ofile <- "01_ERA5L_TEvap_1980_2020.nc"
+ifile <- "./01_data/04_Evap/ERA5L_TEvap_1950_2020.nc"
+ofile <- "./01_data/04_Evap/01_ERA5L_TEvap_1980_2020.nc"
 cdo.cmd <- paste0("cdo seldate,",date.ini,",",date.end," ",ifile," ",ofile)
 system(cdo.cmd)
 
 ifile <- ofile
-ofile.b <- "02_trend_b_ERA5L_TEvap_1980-2020.nc"; ofile.m <- "02_trend_m_ERA5L_TEvap_1980-2020.nc"
+ofile.b <- "./01_data/04_Evap/02_trend_b_ERA5L_TEvap_1980-2020.nc"; ofile.m <- "./01_data/04_Evap/02_trend_m_ERA5L_TEvap_1980-2020.nc"
 cdo.cmd <- paste0("cdo trend ",ifile," ", ofile.b," ", ofile.m)
 system(cdo.cmd)
 
@@ -28,8 +28,8 @@ E[,"m"] <- E[,"m"] * 12 * 10 # transform to mm/decade
 
 # ploting
 library(gridExtra)
-Basins <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
-SA <- shapefile("../../../01_DataSets/South_America/South_America.shp")
+Basins <- shapefile("./01_data//hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data/South_America.shp")
 
 at.m <- round(seq( min(E[,"b"]), max(E[,"b"]), length.out = 12))
 p1 <- ggplot(E[,c("lon","lat","b")], aes(lon,lat)) + 
@@ -55,13 +55,13 @@ p2 <- ggplot(E[,c("lon","lat","m")], aes(lon,lat)) +
 grid.arrange(p1,p2,ncol=2)
 
 ## detrend ERA5-Land & seasonal acummulation  ---- 
-ifile <- "01_ERA5L_TEvap_1980_2020.nc"
-ofile <- "03_detrended_ERA5L_TEvap_1980_2020.nc"
+ifile <- "./01_data/04_Evap/01_ERA5L_TEvap_1980_2020.nc"
+ofile <- "./01_data/04_Evap/03_detrended_ERA5L_TEvap_1980_2020.nc"
 cdo.cmd <- paste0("cdo detrend"," ",ifile," ",ofile)
 system(cdo.cmd)
 file.remove(ifile)
 
-ifile <- ofile; ofile <- "03_detrended_ET_ERA5L_seasonal_1980_2020.nc"
+ifile <- ofile; ofile <- "./01_data/04_Evap/03_detrended_ET_ERA5L_seasonal_1980_2020.nc"
 cdo.cmd <- paste0("cdo seassum ",ifile," ",ofile)
 system(cdo.cmd)
 
@@ -70,13 +70,13 @@ system(cdo.cmd)
 Dates  <- seq(as.Date("1979-12-01"),as.Date("2020-12-01"), by="month")
 date.ini <- format(Dates[1],format="%Y-%m-%d"); date.end <- format(Dates[length(Dates)],format="%Y-%m-%d")
 
-ifile <- "../../../01_DataSets/04_Evap/01_GLEAM/GLEAM_E_1980-2020.nc"
-ofile <- "01_GLEAM_TEvap_1980_2020.nc"
+ifile <- "./01_data/04_Evap/GLEAM_E_1980-2020.nc"
+ofile <- "./01_data/04_Evap/01_GLEAM_TEvap_1980_2020.nc"
 cdo.cmd <- paste0("cdo seldate,",date.ini,",",date.end," ",ifile," ",ofile)
 system(cdo.cmd)
 
 ifile <- ofile
-ofile.b <- "02_trend_b_GLEAM_TEvap_1980-2020.nc"; ofile.m <- "02_trend_m_GLEAM_TEvap_1980-2020.nc"
+ofile.b <- "./01_data/04_Evap/02_trend_b_GLEAM_TEvap_1980-2020.nc"; ofile.m <- "./01_data/04_Evap/02_trend_m_GLEAM_TEvap_1980-2020.nc"
 cdo.cmd <- paste0("cdo trend ",ifile," ", ofile.b," ", ofile.m)
 system(cdo.cmd)
 
@@ -89,8 +89,8 @@ E[,"m"] <- E[,"m"] * 12 * 10 # transform to mm/decade
 
 # ploting
 library(gridExtra)
-Basins <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
-SA <- shapefile("../../../01_DataSets/South_America/South_America.shp")
+Basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data/South_America.shp")
 
 at.m <- round(seq( min(E[,"b"]), max(E[,"b"]), length.out = 12))
 p1 <- ggplot(E[,c("lon","lat","b")], aes(lon,lat)) + 
@@ -116,12 +116,12 @@ p2 <- ggplot(E[,c("lon","lat","m")], aes(lon,lat)) +
 grid.arrange(p1,p2,ncol=2)
 
 ## detrend GLEAM  & seasonal acummulation ---- 
-ifile <- "01_GLEAM_TEvap_1980_2020.nc"
-ofile <- "03_detrended_GLEAM_TEvap_1980_2020.nc"
+ifile <- "./01_data/04_Evap/01_GLEAM_TEvap_1980_2020.nc"
+ofile <- "./01_data/04_Evap/03_detrended_GLEAM_TEvap_1980_2020.nc"
 cdo.cmd <- paste0("cdo detrend"," ",ifile," ",ofile)
 system(cdo.cmd)
 file.remove(ifile)
 
-ifile <- ofile; ofile <- "03_detrended_ET_GLEAM_seasonal_1980_2020.nc"
+ifile <- ofile; ofile <- "./01_data/04_Evap/03_detrended_ET_GLEAM_seasonal_1980_2020.nc"
 cdo.cmd <- paste0("cdo seassum ",ifile," ",ofile)
 system(cdo.cmd)

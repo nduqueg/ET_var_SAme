@@ -14,8 +14,8 @@ Dm.ana <- seq(as.Date("1885-01-01"),as.Date("2020-12-30"),by="month")
 
 # load data ####
 
-H.sst <- brick("../03_HadISST/HadSST.4.0.1.0_median.nc") # not with the anomalies, it's with the actual value
-E.sst <- brick("../01_ERSSTv5/1_ersst_v5_1854_2020.nc")
+H.sst <- brick("./00_preprocess/HadSST.4.0.1.0_median.nc") # not with the anomalies, it's with the actual value
+E.sst <- brick("./00_preprocess/1_ersst_v5_1854_2020.nc")
 
 H.sst.a <- H.sst[[ which(Dm.h >= Dm.ana[1] & Dm.h <= Dm.ana[length(Dm.ana)] )]]
 E.sst.a <- E.sst[[ which(Dm.e >= Dm.ana[1] & Dm.e <= Dm.ana[length(Dm.ana)] )]]
@@ -61,4 +61,4 @@ for (i in 1:length(Dm.ana)){
 }
 
 ELI.E <- as.data.frame(ELI.E)
-write.csv(ELI.E,"00A_ELI_SST.csv")
+write.csv(ELI.E,"./01_data/01_SSTindices/00A_ELI_SST.csv")

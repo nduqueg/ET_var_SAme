@@ -19,35 +19,21 @@ Year.s <- unique(Season.y)
 ## load data -----
 # cdo -sellonlatbox,-85,-30,-25,20 197902.nc ../MSWEP_TropSAm/197902.nc
 # cdo mergetime 197902.nc 197903.nc ....   202010.nc 202011.nc ../MSWEP_Ppt_1979_2020_cdo.nc
-Col.m <- brick("../../03_SpatioTemp/01_TempCharac/03_ET/03_detrended_ERA5L_TEvap_1980_2020.nc")
+Col.m <- brick("./01_data/04_Evap/03_detrended_ERA5L_TEvap_1980_2020.nc")
 Col.m.t <- rasterToPoints(Col.m)
 cord <- Col.m.t[,c(1,2)] %>%  magrittr::set_colnames(.,c("lon","lat"))
 Mask.c<- Col.m[[1]]*0+1
 Col.m <- Col.m[[match(Dates.a, Dates.e5)]]
 
 # ---------------------------------SST indices
-ELI.m <- read.zoo(read.csv("../../01_DataSets/01_SST/04_Cal_Indices/00A_ELI_SST.csv"), 
+ELI.m <- read.zoo(read.csv("./01_data/01_SSTindices/00A_ELI_SST.csv"), 
                   index.column = 1) %>% .[Dates.a]
 
-AMM <- read.zoo(read.csv("../../01_DataSets/01_SST/04_Cal_Indices/00A_AMM_deltaSST.csv")[,c(1,3)], 
+AMM <- read.zoo(read.csv("./01_data/01_SSTindices/00A_AMM_deltaSST.csv")[,c(1,3)], 
                 index.column = 1) %>% .[Dates.a]
 
-Atl3 <- read.zoo(read.csv("../../01_DataSets/01_SST/04_Cal_Indices/00A_AtlEN_SST.csv")[,c(1,3)], 
+Atl3 <- read.zoo(read.csv("./01_data/01_SSTindices/00A_AtlEN_SST.csv")[,c(1,3)], 
                  index.column = 1) %>% .[Dates.a]
-
-TNA <- read.zoo(read.csv("../../01_DataSets/01_SST/04_Cal_Indices/00A_TNA_SST.csv")[,c(1,3)], 
-                index.column = 1) %>% .[Dates.a]
-
-TSA <- read.zoo(read.csv("../../01_DataSets/01_SST/04_Cal_Indices/00A_TSA_SST.csv")[,c(1,3)], 
-                index.column = 1) %>% .[Dates.a]
-
-# ---------------------------------------------------------------------------------------------------------------------------- SLP index
-SLP.iquitos <- read.zoo(read.csv("../../01_DataSets/07A_SLP/03_indexes/01_SLP_iquitos.csv")[,c(1,2)], 
-                        index.column = 1) %>% .[Dates.a]
-SLP.PSpain <- read.zoo(read.csv("../../01_DataSets/07A_SLP/03_indexes/01_SLP_PSpain.csv")[,c(1,2)], 
-                       index.column = 1) %>% .[Dates.a]
-
-SLP.i <- SLP.PSpain - SLP.iquitos
 
 #### calculate seasonal Ppt ####
 Col.s.r <- stackApply(Col.m, Season.y, fun=sum) %>% magrittr::multiply_by(Mask.c)
@@ -61,14 +47,9 @@ ELI.s <- aggregate(ELI.m, by= list(Season.y), FUN= mean)
 AMM.s <- aggregate(AMM, by= list(Season.y), FUN= mean)
 Atl3.s <- aggregate(Atl3, by= list(Season.y), FUN= mean)
 
-TNA.s <- aggregate(TNA, by= list(Season.y), FUN= mean)
-TSA.s <- aggregate(TSA, by= list(Season.y), FUN= mean)
-
-SLPb.s <- aggregate(SLP.i, by= list(Season.y), FUN= mean)
-
 #### partial correlation by season ####
 library(ppcor)
-Cor.ocean <- list(); Cor.SLP <- list()
+Cor.ocean <- list()
 
 Part.Cor <- function(P, ELI.c, AMM.c , Atl3.c){
   Pred.ocean <- data.frame(P = P, ELI = ELI.c, AMM = AMM.c, Atl3 = Atl3.c)
@@ -83,11 +64,6 @@ for (i in seasons){
                           ELI.s[  index(ELI.s) %>% substr(.,6,8) == i ],
                           AMM.s[ index(AMM.s) %>% substr(.,6,8) == i ],
                           Atl3.s[ substr(index(Atl3.s),6,8) == i ])
-  print("- SLP")
-  Cor.SLP[[i]] <- apply(MS.seasons[[ i ]] ,2, Part.Cor, 
-                        SLPb.s[ index(SLPb.s) %>% substr(.,6,8) == i ],
-                        ELI.s[  index(ELI.s) %>% substr(.,6,8) == i ],
-                        AMM.s[ index(AMM.s) %>% substr(.,6,8) == i ])
 }
 
 paste.cord <- function(x,cord){ x %>% t() %>% cbind.data.frame( cord,. )}
@@ -95,12 +71,12 @@ Cor.ocean <- lapply(Cor.ocean, paste.cord, cord)
 Cor.SLP <- lapply(Cor.SLP, paste.cord, cord)
 Cor.SLP <- lapply(Cor.SLP, `colnames<-`,c("lon","lat","SLP","ELI","AMM"))
 
-save(Cor.ocean, Cor.SLP, list=c("Cor.ocean","Cor.SLP"),file="02_partCorr_indices_ET_ERA5L.RData")
+save(Cor.ocean, Cor.SLP, list=c("Cor.ocean","Cor.SLP"),file="./01_data/04_Evap/02_partCorr_indices_ET_ERA5L.RData")
 
 #### plotting the map ####
-load("02_partCorr_indices_ET_ERA5L.RData")
-Basins <- shapefile("../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
-SA <- shapefile("../../01_DataSets/South_America/South_America.shp")
+load("./01_data/04_Evap/02_partCorr_indices_ET_ERA5L.RData")
+Basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data/South_America.shp")
 
 data.ocean <- melt(Cor.ocean, id=c("lon","lat")) %>% magrittr::set_colnames(., c("lon","lat", "Index", "value", "Season"))
 data.ocean <- within(data.ocean,{

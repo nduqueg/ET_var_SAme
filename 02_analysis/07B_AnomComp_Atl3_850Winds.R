@@ -22,13 +22,13 @@ D.e5 <-seq(as.Date("1950-01-01"),as.Date("2020-12-31"),by="month")
 
 Dm.sst <- seq(as.Date("1885-01-01"),as.Date("2020-12-30"),by="month")
 ## loading files ####
-dir.mf <- "../../../01_DataSets/06_Wind/02_ERA5/"
+dir.mf <- "./01_data/06_Wind/"
 W.e <- brick(paste0(dir.mf,"ERA5_u_v_950hPa-Atl_1950-2020.nc"),varname="u"); W.e <- W.e[[match(dates.m,D.e5)]]
 W.n <- brick(paste0(dir.mf,"ERA5_u_v_950hPa-Atl_1950-2020.nc"),varname="v"); W.n <- W.n[[match(dates.m,D.e5)]]
 
-basins <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
+basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
 
-Atl3 <- read.zoo(read.csv("../../../01_DataSets/01_SST/04_Cal_Indices/00A_AtlEN_SST.csv")[,-2], index.column = 1); Atl3 <- Atl3[dates.m]
+Atl3 <- read.zoo(read.csv("./01_data/01_SSTindices/00A_AtlEN_SST.csv")[,-2], index.column = 1); Atl3 <- Atl3[dates.m]
 
 ## seasonal preprocessing ----
 #------------------------------------------------------------------ Winds accummulation to seasons and separation
@@ -82,7 +82,7 @@ W.N.seasons[["SON"]][1:length(Years),] <- t(W.n.s.t[, which(substr(Year.s,6,8) =
   # Atl3.seasons[   ,"JJA"] <- Atl3.s[which(substr(index(Atl3.s),6,8) == "JJA")]
   # Atl3.seasons[   ,"SON"] <- Atl3.s[which(substr(index(Atl3.s),6,8) == "SON")]
   
-  Atl3.seasons <- read.csv("../Atl3_std_1980-2020.csv")[,-1]
+  Atl3.seasons <- read.csv("./01_data/01_SSTindices/Atl3_std_1980-2020.csv")[,-1]
   
 }#--------- SST accummulation to seasons and separation
 
@@ -129,7 +129,7 @@ W.E.anom[["Neg"]] <- cbind(Coord, W.E.anom[["Neg"]])
 W.N.anom[["Neg"]] <- cbind(Coord, W.E.anom[["Neg"]])
 
 data.anom.uv <- list(W.E.anom= W.E.anom, W.N.anom= W.N.anom)
-save(data.anom.uv,"data.anom.uv",file="01_AnomComp_Atl3_Winds_uv.RData")
+save(data.anom.uv,"data.anom.uv",file="./01_data/06_Wind/01_AnomComp_Atl3_Winds_uv.RData")
 ##### Data transformation for plotting ------
 #------------------------------------------------------------------------ Seasonal mean transformation
 {
@@ -162,8 +162,8 @@ data.anom <- list()
   colnames(data.anom[["Neg"]]) <- c("lon", "lat","Season","Angle","Anomaly")
 }
 
-save(data.anom,"data.anom",file="01_AnomComp_Atl3_Winds.RData")
-load("01_AnomComp_Atl3_Winds.RData")
+save(data.anom,"data.anom",file="./01_data/06_Wind/01_AnomComp_Atl3_Winds.RData")
+load("./01_data/06_Wind/01_AnomComp_Atl3_Winds.RData")
 #### plotting ----
 paleta <- c(brewer.pal(9,"YlGnBu"),"#81007F"); paleta[1:3] <- c("#9e0142","#f46d43","#fad366")
 # ---------------------------------------------------------------------------------------------------------- filtering arrows for better visualization

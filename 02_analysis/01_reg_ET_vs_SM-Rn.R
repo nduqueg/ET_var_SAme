@@ -19,9 +19,9 @@ Year.s <- unique(Season.y)
 seasons <- c("DJF","MAM","JJA","SON")
 
 ## load data ----
-ET <- brick("../../../01_DataSets/04_Evap/02_ERA5L/ERA5L_TEvap_1950_2020.nc")
-Rn <- brick("../../../01_DataSets/05_SRad/ERA5L_NetRad_1950-2020.nc")
-SM <- brick("../../../01_DataSets/03_SM/01_ERA5L/ERA5L_SM_1L_1950-2020.nc")
+ET <- brick("./01_data/04_Evap/ERA5L_TEvap_1950_2020.nc")
+Rn <- brick("./01_data/05_Rad/ERA5L_NetRad_1950-2020.nc")
+SM <- brick("./01_data/03_SM/ERA5L_SM_1L_1950-2020.nc")
 
 masks <- list()
 masks[["E5"]] <- ET[[1]]*0+1
@@ -61,8 +61,8 @@ Rn.seasons <- lapply(Rn.seasons, function(x) apply(x, 2, scale, scale=T))
 SM.seasons <- lapply(SM.seasons, function(x) apply(x, 2, scale, scale=T))
 SM.seasons <- lapply(SM.seasons, function(a){ a[, is.na(a[1,])] <- 0; return(a)})
 
-save(Rn.seasons,SM.seasons,ET.seasons,file="02_standardize_predictors.RData")
-load("02_standardize_predictors.RData")
+save(Rn.seasons,SM.seasons,ET.seasons,file="./02_analysis/02_standardize_predictors.RData")
+load("./02_analysis/02_standardize_predictors.RData")
 #### regressions by season ####
 # lists
 Reg.R2 <- list(); Reg.R2.adj <- list();Reg.Coef <- list();Reg.Coef.sig <- list()
@@ -117,22 +117,22 @@ for (i in seasons){
 Reg.R2 <- lapply(Reg.R2, `colnames<-`, c("lon","lat","R2"))
 Reg.R2.adj <- lapply(Reg.R2.adj, `colnames<-`, c("lon","lat","R2"))
 
-save(Reg.R2,"Reg.R2",file="02_regR2_ET_SM_Rn.RData")
-save(Reg.R2.adj,"Reg.R2.adj",file="02_regR2Adj_ET_SM_Rn.RData")
-save(Reg.Coef, "Reg.Coef", file="02_Coef_ET_SM_Rn.RData")
-save(Reg.Coef.sig, "Reg.Coef.sig", file="02_Coef_Significance_ET_SM_Rn.RData")
+save(Reg.R2,"Reg.R2",file="./02_analysis/02_regR2_ET_SM_Rn.RData")
+save(Reg.R2.adj,"Reg.R2.adj",file="./02_analysis/02_regR2Adj_ET_SM_Rn.RData")
+save(Reg.Coef, "Reg.Coef", file="./02_analysis/02_Coef_ET_SM_Rn.RData")
+save(Reg.Coef.sig, "Reg.Coef.sig", file="./02_analysis/02_Coef_Significance_ET_SM_Rn.RData")
 
 
 
 #### plotting the map ####
-load("02_regR2_ET_SM_Rn.RData")
-load("02_regR2Adj_ET_SM_Rn.RData")
-load("02_Coef_ET_SM_Rn.RData")
-load("02_Coef_Significance_ET_SM_Rn.RData")
+load("./02_analysis/02_regR2_ET_SM_Rn.RData")
+load("./02_analysis/02_regR2Adj_ET_SM_Rn.RData")
+load("./02_analysis/02_Coef_ET_SM_Rn.RData")
+load("./02_analysis/02_Coef_Significance_ET_SM_Rn.RData")
 seasons <- c("DJF","MAM","JJA","SON")
 
-Basins <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
-SA <- shapefile("../../../01_DataSets/South_America/South_America.shp")
+Basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data/South_America.shp")
 
 Reg.R2.t <- melt(Reg.R2, id=c("lon","lat")) %>% within(., L1 <- factor(L1, levels = c("MAM","JJA","SON","DJF")))
 Reg.R2.adj.t <- melt(Reg.R2.adj, id=c("lon","lat")) %>% within(., L1 <- factor(L1, levels = c("MAM","JJA","SON","DJF")))

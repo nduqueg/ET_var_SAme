@@ -19,7 +19,7 @@ Season.y <- paste0(years.m[-1],"-",time2season(Dates.a)[-length(Dates.a)]); Seas
 Year.s <- unique(Season.y)
   
 ## load data -----
-MDiv <- brick("../../../01_DataSets/11_VIMFDiv/ERA5_Mdiv_1950-2020.nc")
+MDiv <- brick("./01_data/09_MDiv/ERA5_Mdiv_1950-2020.nc")
 MDiv <- aggregate(MDiv,2)
 MDiv.t <- rasterToPoints(MDiv); cord <- MDiv.t[,c(1,2)]
 Mask.c<- MDiv[[1]]*0+1
@@ -34,7 +34,7 @@ MDiv <- MDiv[[match(Dates.a, Dates.ms)]]
 # AMM <- read.zoo(read.csv("../../../01_DataSets/01_SST/04_Cal_Indices/00A_AMM_deltaSST.csv")[,c(1,3)], 
 #                 index.column = 1); AMM <- AMM[Dates.a]
 
-Atl3 <- read.zoo(read.csv("../../../01_DataSets/01_SST/04_Cal_Indices/00A_AtlEN_SST.csv")[,c(1,2)], 
+Atl3 <- read.zoo(read.csv("./01_data/01_SSTindices/00A_AtlEN_SST.csv")[,c(1,2)], 
                   index.column = 1); Atl3 <- Atl3[Dates.a]
 # 
 # TNA <- read.zoo(read.csv("../../01_DataSets/01_SST/04_Cal_Indices/00A_TNA_SST.csv")[,c(1,3)], 
@@ -64,7 +64,7 @@ for ( i in seasons) DIVa.seasons[[i]] <- apply(t(Col.s.t[, which(substr(Year.s,6
 
 #### identifying periods of high and low Atl3 --------
 Atl3.bool <- list()
-Atl3.seasons <- read.csv("../Atl3_std_1980-2020.csv"); row.names(Atl3.seasons) <- Atl3.seasons[,1]; Atl3.seasons <- Atl3.seasons[,-1]
+Atl3.seasons <- read.csv("./01_data/01_SSTindices/Atl3_std_1980-2020.csv"); row.names(Atl3.seasons) <- Atl3.seasons[,1]; Atl3.seasons <- Atl3.seasons[,-1]
 #---------------------------------------------------------------------- identification of periods with SST higher than 0.4 & lower than -0.4
 {
   Atl3.bool[["Pos"]] <- data.frame(matrix(NA, ncol=4, nrow= length(Years))); colnames(Atl3.bool[["Pos"]]) <- seasons; rownames(Atl3.bool[["Pos"]]) <- Years
@@ -75,7 +75,7 @@ Atl3.seasons <- read.csv("../Atl3_std_1980-2020.csv"); row.names(Atl3.seasons) <
   Atl3.bool[["Neg"]][which(Atl3.seasons <=-1, arr.ind = T)] <- TRUE
 
   a <- t(sapply(Atl3.bool,function(x){apply(x,2,sum)}))
-  write.csv(a,"Atl3_events_1980-2020.csv")
+  write.csv(a,"./01_data/09_MDiv/Atl3_events_1980-2020.csv")
 }
 
 #--------------------------------------------------------------------------- initialization of datasets
@@ -127,11 +127,11 @@ Test.comp.E5 <- lapply(Test.comp.E5, function(x) do.call(cbind,x))
 
 data.anom2 <- do.call(rbind, data.anom); data.anom2$Dir <- factor(data.anom2$Dir, levels = c("Pos","Neg"))
 
-save(data.anom2,"data.anom2",file="02_Atl3_divVIM.RData")
-save(Test.comp.E5,"Test.comp.E5",file="03_divVIM_Atl3_Comp_Ttest.RData")
+save(data.anom2,"data.anom2",file="./01_data/09_MDiv/02_Atl3_divVIM.RData")
+save(Test.comp.E5,"Test.comp.E5",file="./01_data/09_MDiv/03_divVIM_Atl3_Comp_Ttest.RData")
 
 #### plotting the map ####
-SA <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
 
 
 # at.m <- c(-4,-3,-2,-1.5,-1,-0.5,0.5,1,1.5,2,3,4)*0.1

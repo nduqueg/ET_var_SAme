@@ -2,9 +2,9 @@ rm(list=ls())
 cat("\014")
 
 library(raster)
-source("../../../read_brickToPoints.R")
+# source("../../../read_brickToPoints.R")
 library(hydroTSM)
-source("../../../time2season.R")
+# source("../../../time2season.R")
 library(zoo)
 library(ncdf4)
 library(reshape)
@@ -35,7 +35,7 @@ cord <- list()
 # read SM
 # f1 <- nc_open("../../../01_DataSets/03_SM/03_ESA_CCI_SM/ESA_CCI_SM_1979_2020_filtered.nc")
 # CCI.m <- ncvar_get(f1, varid = "variable")
-CCI.m <- rasterToPoints(brick("../../../01_DataSets/03_SM/03_ESA_CCI_SM/ESA_CCI_SM_1979_2020_filtered.nc"))
+CCI.m <- rasterToPoints(brick("./01_data/03_SM/ESA_CCI_SM_1979_2020_max.nc"))
 # lon.cci <- f1$dim[[which(names(f1$dim)=="longitude" | names(f1$dim)=="lon") ]]$vals; lat.cci <- f1$dim[[which(names(f1$dim)=="latitude" | names(f1$dim)=="lat" )]]$vals
 # cord[["CCI"]] <- expand.grid(lon=lon.cci, lat=lat.cci)
 # 
@@ -59,8 +59,8 @@ CCI.m <- rasterToPoints(brick("../../../01_DataSets/03_SM/03_ESA_CCI_SM/ESA_CCI_
 
 
 # SSTs
-AMM <- read.zoo(read.csv("../../03_Composites/AMM_std_1980-2020.csv"),index.column = 1)
-Atl3 <- read.zoo(read.csv("../../03_Composites/Atl3_std_1980-2020.csv"),index.column = 1)
+AMM <- read.zoo(read.csv("./01_data/01_SSTindices/AMM_std_1980-2020.csv"),index.column = 1)
+Atl3 <- read.zoo(read.csv("./01_data/01_SSTindices/Atl3_std_1980-2020.csv"),index.column = 1)
 
 #### crop 1980 - onwards####
 # CCI.m <- CCI.m[,,match(Dates,Dm.cci)]
@@ -70,8 +70,8 @@ Atl3 <- read.zoo(read.csv("../../03_Composites/Atl3_std_1980-2020.csv"),index.co
 #### load seasonal preprocessing ####
 
 # cdo seasmean ERA5L_SM_1L_1950-2020.nc ERA5L_SM_1L_seasonal.nc
-E5.s.r <- brick("../../../01_DataSets/03_SM/01_ERA5L/ERA5L_SM_1L_seasonal.nc")
-soil.r <- shift(brick("../../../01_DataSets/01_ERA5L_soil_type.nc"),dx=-360)
+E5.s.r <- brick("./01_data/03_SM/ERA5L_SM_1L_seasonal.nc")
+soil.r <- shift(brick("./01_data/01_ERA5L_soil_type.nc"),dx=-360)
 aux <- mask(resample(soil.r, E5.s.r[[1]], method="ngb"),E5.s.r[[1]])
 E5.s.r <- mask(resample(E5.s.r,aux),aux)
 soil.r <- rasterToPoints(aux); soil.r[,3] <- round(soil.r[,3],0)
@@ -80,7 +80,7 @@ soil.r <- rasterToPoints(aux); soil.r[,3] <- round(soil.r[,3],0)
 E5.s.r <- rasterToPoints(E5.s.r[[match(Year.s,Year.s.e5)]])
 cord[["E5"]] <- E5.s.r[,1:2]; E5.s.r <- E5.s.r[,-c(1,2)]
 
-CCI.s.r <- rasterToPoints(brick("../../../01_DataSets/03_SM/03_ESA_CCI_SM/ESACCI_SM_seasonal_80-DJF_20-SON.nc"))
+CCI.s.r <- rasterToPoints(brick("./01_data/03_SM/ESACCI_SM_seasonal_80-DJF_20-SON.nc"))
 cord[["CCI"]] <- CCI.s.r[,1:2]; CCI.s.r <- CCI.s.r[,-c(1,2)]
 
 
@@ -190,17 +190,17 @@ Comp.CCI.anom <- lapply(Comp.CCI.anom, SM.Comp.org, cord[["CCI"]])
 Test.comp.E5 <- lapply(Test.comp.E5, SM.Comp.org, cord[["E5"]])
 Test.comp.CCI <- lapply(Test.comp.CCI, SM.Comp.org, cord[["CCI"]])
 
-save(Comp.E5, Comp.CCI , list=c("Comp.E5","Comp.CCI"), file="SatPer_Composites.RData")
-save(Comp.E5.anom, Comp.CCI.anom,list=c("Comp.E5.anom","Comp.CCI.anom"), file="SatPer_anom_Composites.RData")
-save(Test.comp.E5, Test.comp.CCI , list=c("Test.comp.E5","Test.comp.CCI"), file="SatPer_Composites_Ttest.RData")
+save(Comp.E5, Comp.CCI , list=c("Comp.E5","Comp.CCI"), file="./01_data/03_SM/SatPer_Composites.RData")
+save(Comp.E5.anom, Comp.CCI.anom,list=c("Comp.E5.anom","Comp.CCI.anom"), file="./01_data/03_SM/SatPer_anom_Composites.RData")
+save(Test.comp.E5, Test.comp.CCI , list=c("Test.comp.E5","Test.comp.CCI"), file="./01_data/03_SM/SatPer_Composites_Ttest.RData")
 
 #### shapefile composites statistical significance ----
 library(reshape)
 library(raster)
 
-load("SatPer_Composites.RData")
-load("SatPer_anom_Composites.RData")
-load("SatPer_Composites_Ttest.RData")
+load("./01_data/03_SM/SatPer_Composites.RData")
+load("./01_data/03_SM/SatPer_anom_Composites.RData")
+load("./01_data/03_SM/SatPer_Composites_Ttest.RData")
 
 # organizing the statistical significance in tables for creating the shapefiles
 data.sig <- list()
@@ -240,15 +240,15 @@ for(dataset in c("ERA5L", "CCI")){    shape.sig[[dataset]] <- list()
 }
 shape.sig <- do.call(rbind, shape.sig)  # joining all the lines in the dataframe shapefile
 shape.sig$Season <- factor(shape.sig$Season, levels = seasons); shape.sig$Phase <- factor(shape.sig$Phase, levels = c("Pos","Neg"))
-save(shape.sig, "shape.sig", file="SatPer_Composites_Ttest_shape.RData")
+save(shape.sig, "shape.sig", file="./01_data/03_SM/SatPer_Composites_Ttest_shape.RData")
 
 
 
 #### seasonal plotting ----
-load("SatPer_Composites.RData")
-load("SatPer_anom_Composites.RData")
-load("SatPer_Composites_Ttest.RData")
-load("SatPer_Composites_Ttest_shape.RData")
+load("./01_data/03_SM/SatPer_Composites.RData")
+load("./01_data/03_SM/SatPer_anom_Composites.RData")
+load("./01_data/03_SM/SatPer_Composites_Ttest.RData")
+load("./01_data/03_SM/SatPer_Composites_Ttest_shape.RData")
 
 library(ggplot2)
 library(RColorBrewer)
@@ -256,8 +256,8 @@ library(ggpattern)
 library(sf)
 
 seasons <- c("DJF","MAM","JJA","SON")
-Basins <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
-SA <- shapefile("../../../01_DataSets/South_America/South_America.shp")
+Basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data/South_America.shp")
 
 
 # organizing the composites
@@ -288,7 +288,7 @@ plot.sig <- function( Data.anom, Shape.spec, mode, df.rect, pat.col="black", lg.
     
     scale_fill_stepsn(colours=paleta, breaks=at.m,
                       values=scales::rescale(at.m.v,from=range(at.m)),limits=c(min(at.m),max(at.m)),
-                      guide=guide_colorsteps(even.steps = F, barwidth=unit(10,"cm")), name="SM\nSat %")+
+                      guide=guide_colorsteps(even.steps = F, barwidth=unit(10,"cm")), name="SM Anom.\n[Sat %]")+
     
     geom_polygon(data=Basins,aes(x=long,y=lat, group=group), colour="black",fill="NA",linewidth=0.15)+
     geom_polygon(data=SA,aes(x=long,y=lat, group=group), linetype="dashed", colour="black",fill="NA",linewidth=0.05)+
@@ -353,7 +353,7 @@ grid.arrange(AMM.cci, Atl3.cci, ncol=2, widths=c(2.05,1))
 
 
 #### plotting positive less negative ----
-load("SatPer_Composites.RData")
+load("./01_data/03_SM/SatPer_Composites.RData")
 
 seasons <- c("DJF","MAM","JJA","SON")
 data.Pos_Neg.E5 <- lapply(Comp.E5, function(x){ y <- x$Pos[,seasons] - x$Neg[,seasons]; y <- cbind(x$Pos[,c("x","y")], y); return(y)})

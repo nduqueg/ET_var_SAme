@@ -8,11 +8,11 @@ library(reshape2)
 library(RColorBrewer)
 
 # loading precalculated composites ----
-load("../03_Composites/07_Rn/Radiation_Composites.RData"); Comp.Rn <- Comp.E5
-load("../03_Composites/08_ET/ET_Composites.RData")
+load("./01_data/05_Rad/Radiation_Composites.RData"); Comp.Rn <- Comp.E5
+load("./01_data/04_Evap/ET_Composites.RData")
 
-Basins <- shapefile("../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
-SA <- shapefile("../../01_DataSets/South_America/South_America.shp")
+Basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data/South_America.shp")
 
 ## datasets unification ----
 data.Rn <- melt(Comp.Rn, id=c("lon","lat")); data.Rn <- data.Rn[!is.na(data.Rn$value),]
@@ -42,7 +42,7 @@ rect <- data.frame(xmi=c(-70,-70,-73,-65),
                    mode=c("AMM","AMM","AMM","Atl3"),
                    Phase = factor("Pos"))
 
-load("../03_Composites/08_ET/ET_Composites_Ttest_shape.RData")
+load("./01_data/04_Evap/ET_Composites_Ttest_shape.RData")
 # ERA5L
 plot.sig <- function(data.ET, data.Rns, shape.spec, rect.spec, title.p=NA){
   

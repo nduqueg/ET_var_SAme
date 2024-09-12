@@ -13,12 +13,12 @@ Dm.e <- seq(as.Date("1854-01-01"),as.Date("2020-12-31"),by="month")
 Dm.ana <- seq(as.Date("1885-01-01"),as.Date("2020-12-30"),by="month")
 
 # load data ####
-ELI <- read.zoo(read.csv("../02_Indices/ELI_m_std_1854_2019.csv")[,-1], index.column = 1)
+ELI <- read.zoo(read.csv("./01_data/01_SSTindices/00A_ELI_SST.csv")[,-1], index.column = 1)
 
-H.sst <- brick("../03_HadISST/HadSST.4.0.1.0_median.nc")
+H.sst <- brick("./00_preprocess//HadSST.4.0.1.0_median.nc")
 {
   H.sst.Gmean <- zoo(cellStats(H.sst ,stat="mean",na.rm=T), order.by = Dm.h)
-  png(filename = "../03_HadISST/01_globalAvg_1850-2022.png", width = 800, height = 600)
+  png(filename = "./01_data/01_SSTindices/01_globalAvg_1850-2022.png", width = 800, height = 600)
   plot(H.sst.Gmean,main="HadSSTv4 global average - based on 1961-1990 clim.",ylab="Temp. Anom. [°C]")
   dev.off()
 } #### HadSST - Calculate global mean & plotting
@@ -26,7 +26,7 @@ H.sst <- brick("../03_HadISST/HadSST.4.0.1.0_median.nc")
 E.sst <- brick("../01_ERSSTv5/Anom_ersst_v5_1854_2020.nc")
 {
   E.sst.Gmean <- zoo(cellStats(E.sst ,stat="mean",na.rm=T), order.by = Dm.e)
-  png(filename = "../01_ERSSTv5//01_globalAvg_1854-2022.png", width = 800, height = 600)
+  png(filename = "./01_data/01_SSTindices/01_globalAvg_1854-2022.png", width = 800, height = 600)
   plot(E.sst.Gmean,main="ERSSTv5 global average - based on 1971-2000 clim.",ylab="Temp. Anom. [°C]")
   dev.off()
 } #### ERSST - Calculate global mean & plotting
@@ -40,8 +40,8 @@ ggplot(data.g,aes(Index,Value,col=Series))+#facet_wrap(.~Series,ncol=1,scales = 
   theme_bw()+theme(legend.position=c(0.2,0.9),legend.direction = "horizontal",legend.background = element_rect(linetype="solid", colour ="black"),axis.ticks.length=unit(-4, "pt"), axis.text.x = element_text(margin=margin(5,5,5,5),vjust = -1),axis.text.y = element_text(margin=margin(0,7,5,0,"pt")),panel.grid = element_line(linetype="dashed",color="lightgray"))
 
 {
-  aux <- read.csv("../co2_mm_mlo.csv",skip=56); CO2.maunaloa <- zoo(aux[,c("average","deseasonalized")], order.by = as.Date(paste0(aux$year,"-",aux$month,"-01")))
-  aux <- read.table("../Meure et al - CO2 concentration",skip=56); aux2 <- aux[match(unique(aux[,2]),aux[,2]),]; for(i in 1:nrow(aux2)){aux2[i,3] <- mean(aux[aux[,2]==aux2[i,2],3])}
+  aux <- read.csv("./00_preprocess/co2_mm_mlo.csv",skip=56); CO2.maunaloa <- zoo(aux[,c("average","deseasonalized")], order.by = as.Date(paste0(aux$year,"-",aux$month,"-01")))
+  aux <- read.table("./00_preprocess/Meure et al - CO2 concentration",skip=56); aux2 <- aux[match(unique(aux[,2]),aux[,2]),]; for(i in 1:nrow(aux2)){aux2[i,3] <- mean(aux[aux[,2]==aux2[i,2],3])}
   
   CO2.ice <- zoo(aux2[,3], order.by = as.Date(paste0(floor(aux2[,2]),"-0",
                                                     round((aux2[,2]-floor(aux2[,2]))*10+1,0),
@@ -131,11 +131,11 @@ H.sst.NAtl <- lat_Weight.Mean( crop(H.sst.a,extent(c(-80,0,0,70))), Dm.ana=Dm.an
 E.sst.NAtl <- lat_Weight.Mean(crop(E.sst.a,extent(c(360-80,360,0,70))), Dm.ana=Dm.ana)
 SST.NAtl <- cbind(H.sst.NAtl,E.sst.NAtl)
 
-write.csv(as.data.frame(SST.NAtl),"00A_NAtl_SST.csv")
+write.csv(as.data.frame(SST.NAtl),"./01_data/01_SSTindices/00A_NAtl_SST.csv")
 
 # AMO - filter K=121 - plotting ####
 AMO.Atl <- rollmean(SST.NAtl,k=121)
-write.csv(as.data.frame(AMO.Atl), "01A_AMO_1890-2015.csv")
+write.csv(as.data.frame(AMO.Atl), "./01_data/01_SSTindices/01A_AMO_1890-2015.csv")
 
 library(ggplot2)
 
@@ -166,10 +166,10 @@ ggplot(data.g,aes(Index,Value,alpha=Variable, col=Series))+#facet_wrap(.~Series,
 H.sst.N34 <- lat_Weight.Mean( crop(H.sst.a,extent(c(-170,-120,-5,5))), Dm.ana=Dm.ana)
 E.sst.N34 <- lat_Weight.Mean(crop(E.sst.a,extent(c(360-170,360-120,-5,5))), Dm.ana=Dm.ana)
 SST.N34 <- cbind(H.sst.N34,E.sst.N34)
-write.csv(as.data.frame(SST.N34),"00A_N34_SST.csv")
+write.csv(as.data.frame(SST.N34),"./01_data/01_SSTindices/00A_N34_SST.csv")
 
 ONI <- rollmean(SST.N34,k=3)
-write.csv(as.data.frame(ONI), "01A_ONI_1890-2015.csv")
+write.csv(as.data.frame(ONI), "./01_data/01_SSTindices/01A_ONI_1890-2015.csv")
 
 date.comp <- seq(as.Date("1885-01-01"),as.Date("2018-12-31"),by="month")
 aux.H.N34 <- H.sst.N34[date.comp]; aux.E.N34 <- E.sst.N34[date.comp]
@@ -186,10 +186,10 @@ aux.H.N34 <- H.sst.N34[date.comp]; aux.E.N34 <- E.sst.N34[date.comp]
 H.sst.AEN <- lat_Weight.Mean( crop(H.sst.a,extent(c(-20,0,-3,3))), Dm.ana=Dm.ana)
 E.sst.AEN <- lat_Weight.Mean(crop(E.sst.a,extent(c(360-20,360,-3,3))), Dm.ana=Dm.ana)
 SST.AEN <- cbind(H.sst.AEN,E.sst.AEN)
-write.csv(as.data.frame(SST.AEN),"00A_AtlEN_SST.csv")
+write.csv(as.data.frame(SST.AEN),"./01_data/01_SSTindices/00A_AtlEN_SST.csv")
 
 AEN <- rollmean(SST.AEN,k=3)
-write.csv(as.data.frame(AEN), "01A_AEN_1890-2015.csv")
+write.csv(as.data.frame(AEN), "./01_data/01_SSTindices/01A_AEN_1890-2015.csv")
 
 date.comp <- seq(as.Date("1885-01-01"),as.Date("2018-12-31"),by="month")
 {cor.ELI.AEN <- numeric(length = 2); names(cor.ELI.AEN) <- c("HadSST v4.0","ERSSTv5")
@@ -249,6 +249,8 @@ ggplot(data.g,aes(Index,Value,alpha=Variable, col=Series))+#facet_wrap(.~Series,
                                               caption = "detrended with CO2 relationship")+
     theme_bw()+theme(legend.position=c(0.2,0.9),legend.direction = "horizontal",legend.background = element_rect(linetype="solid", colour ="black"),axis.ticks.length=unit(-4, "pt"), axis.text.x = element_text(margin=margin(5,5,5,5),vjust = -1),axis.text.y = element_text(margin=margin(0,7,5,0,"pt")),panel.grid = element_line(linetype="dashed",color="lightgray"))
 } # plot for the las 30 years
+
+
 ### atlantic meridional mode ----
 
 H.sst.AMM <- lat_Weight.Mean( crop(H.sst.a,extent(c(-70,-15,5,25))), Dm.ana=Dm.ana) - 
@@ -258,10 +260,10 @@ E.sst.AMM <- lat_Weight.Mean( crop(E.sst.a,extent(c(360-70,360-15,5,25))), Dm.an
   lat_Weight.Mean( crop(E.sst.a,extent(c(360-40,360,-25,-5))), Dm.ana=Dm.ana)
 
 SST.AMM <- cbind(H.sst.AMM,E.sst.AMM)
-write.csv(as.data.frame(SST.AMM),"00A_AMM_deltaSST.csv")
+write.csv(as.data.frame(SST.AMM),"./01_data/01_SSTindices/00A_AMM_deltaSST.csv")
 
 AMM <- rollmean(SST.AMM,k=121, na.rm=T)
-write.csv(as.data.frame(AMM), "01A_AMM_1890-2015.csv")
+write.csv(as.data.frame(AMM), "./01_data/01_SSTindices/01A_AMM_1890-2015.csv")
 
 cor.ELI.AMM<- numeric(length = 2); names(cor.ELI.AMM) <- c("HadSST v4.0","ERSSTv5")
 cor.ELI.AMM[1] <- cor.test(H.sst.AMM[date.comp], ELI$data.m[date.comp])$estimate
@@ -343,6 +345,7 @@ ggplot(data.g,aes(Index,Value,alpha=Variable, col=Series))+#facet_wrap(.~Series,
   scale_alpha_manual(values=c(0.3,1),guide = 'none')+
   ylab("SST Anom. [°C]")+xlab("year") +labs(title="Atlantic Meridional Mode index",caption = "detrended with CO2 relationship")+
   theme_bw()+theme(legend.position=c(0.2,0.9),legend.direction = "horizontal",legend.background = element_rect(linetype="solid", colour ="black"),axis.ticks.length=unit(-4, "pt"), axis.text.x = element_text(margin=margin(5,5,5,5),vjust = -1),axis.text.y = element_text(margin=margin(0,7,5,0,"pt")),panel.grid = element_line(linetype="dashed",color="lightgray"))
+
 ### tropical North atlantic mode ----
 
 H.sst.TNA <- lat_Weight.Mean( crop(H.sst.a,extent(c(-70,-15,5,25))), Dm.ana=Dm.ana)
@@ -350,10 +353,10 @@ H.sst.TNA <- lat_Weight.Mean( crop(H.sst.a,extent(c(-70,-15,5,25))), Dm.ana=Dm.a
 E.sst.TNA <- lat_Weight.Mean( crop(E.sst.a,extent(c(360-70,360-15,5,25))), Dm.ana=Dm.ana)
 
 SST.TNA <- cbind(H.sst.TNA,E.sst.TNA)
-write.csv(as.data.frame(SST.TNA),"00A_TNA_SST.csv")
+write.csv(as.data.frame(SST.TNA),"./01_data/01_SSTindices/00A_TNA_SST.csv")
 
 D.TNA <- rollmean(SST.TNA,k=121, na.rm=T)
-write.csv(as.data.frame(D.TNA), "01A_decadalTNA_1890-2015.csv")
+write.csv(as.data.frame(D.TNA), "./01_data/01_SSTindices/01A_decadalTNA_1890-2015.csv")
 
 cor.ELI.TNA<- numeric(length = 2); names(cor.ELI.TNA) <- c("HadSST v4.0","ERSSTv5")
 cor.ELI.TNA[1] <- cor.test(H.sst.TNA[date.comp], ELI$data.m[date.comp])$estimate
@@ -419,10 +422,10 @@ H.sst.TSA <- lat_Weight.Mean( crop(H.sst.a,extent(c(-40,0,-25,-5))), Dm.ana=Dm.a
 E.sst.TSA <- lat_Weight.Mean( crop(E.sst.a,extent(c(360-40,360,-25,-5))), Dm.ana=Dm.ana)
 
 SST.TSA <- cbind(H.sst.TSA,E.sst.TSA)
-write.csv(as.data.frame(SST.TSA),"00A_TSA_SST.csv")
+write.csv(as.data.frame(SST.TSA),"./01_data/01_SSTindices/00A_TSA_SST.csv")
 
 D.TSA <- rollmean(SST.TSA,k=121, na.rm=T)
-write.csv(as.data.frame(D.TSA), "01A_decadalTSA_1890-2015.csv")
+write.csv(as.data.frame(D.TSA), "./01_data/01_SSTindices/01A_decadalTSA_1890-2015.csv")
 
 cor.ELI.TSA <- numeric(length = 2); names(cor.ELI.TSA) <- c("HadSST v4.0","ERSSTv5")
 cor.ELI.TSA[1] <- cor.test(H.sst.TSA[date.comp], ELI$data.m[date.comp])$estimate
@@ -470,10 +473,10 @@ H.sst.Carb <- lat_Weight.Mean( crop(H.sst.a,extent(c(-85,-65,10,25))), Dm.ana=Dm
 E.sst.Carb <- lat_Weight.Mean( crop(E.sst.a,extent(c(360-85,360-65,10,25))), Dm.ana=Dm.ana)
 
 SST.Carb <- cbind(H.sst.Carb,E.sst.Carb)
-write.csv(as.data.frame(SST.Carb),"00A_Caribbean_SST.csv")
+write.csv(as.data.frame(SST.Carb),"./01_data/01_SSTindices/00A_Caribbean_SST.csv")
 
 D.Carb <- rollmean(SST.Carb,k=121, na.rm=T)
-write.csv(as.data.frame(D.Carb), "01A_decadalCaribbean_1890-2015.csv")
+write.csv(as.data.frame(D.Carb), "./01_data/01_SSTindices/01A_decadalCaribbean_1890-2015.csv")
 
 cor.ELI.Carb <- numeric(length = 2); names(cor.ELI.Carb) <- c("HadSST v4.0","ERSSTv5")
 cor.ELI.Carb[1] <- cor.test(H.sst.Carb[date.comp], ELI$data.m[date.comp])$estimate

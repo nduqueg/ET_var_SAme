@@ -29,12 +29,12 @@ Year.s.gl <- unique(Season.y.gl)
 
 ## load data -----
 # ----------------------------------------------------------------------------------------------------------------------- detrended
-E.gl <- brick("../../01_TempCharac/03_ET/03_detrended_ET_GLEAM_seasonal_1980_2020.nc")
+E.gl <- brick("./01_data/04_Evap/03_detrended_ET_GLEAM_seasonal_1980_2020.nc")
 E.gl.t <- rasterToPoints(E.gl); cord.gl <- E.gl.t[,1:2]; E.gl.t <- E.gl.t[,-c(1:2)]
 
 # cdo expr,'e=e*(-1000);' -muldpm [ ERA5L_original.nc ] ERA5L_TEvap_1950_2020.nc
 # cdo seassum ERA5L_TEvap_1950_2020.nc ERA5L_TEvap_seasonal.nc
-E.e5 <-  brick("../../01_TempCharac/03_ET/03_detrended_ET_ERA5L_seasonal_1980_2020.nc")
+E.e5 <-  brick("./01_data/04_Evap/03_detrended_ET_ERA5L_seasonal_1980_2020.nc")
 E.e5.t <- rasterToPoints(E.e5); cord.e5 <- E.e5.t[,1:2]; E.e5.t <- E.e5.t[,-c(1:2)]
 E.e5.t <- E.e5.t[,match(Year.s, Year.s.e5)]
 
@@ -44,8 +44,8 @@ E.e5.t <- E.e5.t[,match(Year.s, Year.s.e5)]
 # ELI.s <- read.csv("../../01_DataSets/01_SST/02_Indices/ELI_s_1854_2019.csv")
 # ELI.s <- ELI.s[match(Year.s,ELI.s$X),]
 
-AMM <- read.zoo(read.csv("../../03_Composites/AMM_std_1980-2020.csv"),index.column = 1)
-Atl3 <- read.zoo(read.csv("../../03_Composites/Atl3_std_1980-2020.csv"),index.column = 1)
+AMM <- read.zoo(read.csv("./01_data/01_SSTindices/AMM_std_1980-2020.csv"),index.column = 1)
+Atl3 <- read.zoo(read.csv("./01_data/01_SSTindices/Atl3_std_1980-2020.csv"),index.column = 1)
 
 #### separate seasons ####
 E.e5.Mean <- list(); E.e5.s <- list()
@@ -116,8 +116,8 @@ Comp.gl <- lapply(Comp.gl, Comp.org, cord.gl)
 Test.comp.E5 <- lapply(Test.comp.E5, Comp.org, cord.e5)
 Test.comp.gl <- lapply(Test.comp.gl, Comp.org, cord.gl)
 
-save(Comp.E5, Comp.gl, list=c("Comp.E5","Comp.gl"), file="ET_Composites.RData")
-save(Test.comp.E5, Test.comp.gl, list=c("Test.comp.E5", "Test.comp.gl"), file="ET_Composites_Ttest.RData")
+save(Comp.E5, Comp.gl, list=c("Comp.E5","Comp.gl"), file="./01_data/04_Evap/ET_Composites.RData")
+save(Test.comp.E5, Test.comp.gl, list=c("Test.comp.E5", "Test.comp.gl"), file="./01_data/04_Evap/ET_Composites_Ttest.RData")
 
 #### seasonal plotting ####
 library(reshape)
@@ -125,8 +125,8 @@ library(ggplot2)
 library(raster)
 library(RColorBrewer)
 
-load("ET_Composites.RData")
-load("ET_Composites_Ttest.RData")
+load("./01_data/04_Evap/ET_Composites.RData")
+load("./01_data/04_Evap/ET_Composites_Ttest.RData")
 seasons <- c("DJF","MAM","JJA","SON")
 
 
@@ -192,13 +192,13 @@ shape.sig[[dataset]] <- do.call(rbind, shape.sig[[dataset]])  # joining all the 
 }
 shape.sig <- do.call(rbind, shape.sig)  # joining all the lines in the dataframe shapefile
 shape.sig$Season <- factor(shape.sig$Season, levels = seasons); shape.sig$Phase <- factor(shape.sig$Phase, levels = c("Pos","Neg"))
-save(shape.sig,file="ET_Composites_Ttest_shape.RData")
+save(shape.sig,file="./01_data/04_Evap/ET_Composites_Ttest_shape.RData")
 
-load("ET_Composites_Ttest_shape.RData")
+load("./01_data/04_Evap/ET_Composites_Ttest_shape.RData")
 library(ggpattern)
 library(sf)
-Basins <- shapefile("../../../01_DataSets/South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
-SA <- shapefile("../../../01_DataSets/South_America/South_America.shp")
+Basins <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
+SA <- shapefile("./01_data/South_America.shp")
 
 # organizing the composites
 data <- melt(Comp.E5, id=c("x","y")); data$dataset <- "ERA5L"; data <- data[!is.nan(data$value),]

@@ -56,7 +56,9 @@ ext <- extent(-85,-30,-25,15) # Rectangule between -20 to 15°N and -82 to -40°
 # writeRaster(SM.m, filename = "ESA_CCI_SM_1979_2020_filtered.nc", format="CDF", overwrite=T)
 
 
-SM.m <- brick("ESA_CCI_SM_1979_2020_filtered.nc")
+SM.m <- brick("./01_data/03_SM/ESA_CCI_SM_1979_2020_filtered.nc")
+max <- stackApply(SM.m, rep(1,nlayers(SM.m)), fun=max)
+writeRaster(max,filename = "./01_data/03_SM/ESA_CCI_SM_1979_2020_max.nc",format="CDF",overwrite=T)
 
 #### seasonal preprocessing ----
 SM <- SM.m[[-c(1:11,504)]]
@@ -70,7 +72,7 @@ Year.s <- unique(Season.y)
 
 #mask.P <- P[[1]]*0+1
 SM.s <- stackApply(SM, Season.y, fun=meanThresh, na.rm=0.5)#; P.s <- P.s*mask.P
-writeRaster(SM.s,filename = "ESACCI_SM_seasonal_80-DJF_20-SON.nc",format="CDF",overwrite=T)
+writeRaster(SM.s,filename = "./01_data/03_SM/ESACCI_SM_seasonal_80-DJF_20-SON.nc",format="CDF",overwrite=T)
 
 SM.s.t <- rasterToPoints(SM.s)
 Coord <- as.data.frame(SM.s.t[,1:2]); SM.s.t <- SM.s.t[,-c(1,2)]
@@ -83,7 +85,7 @@ MS.seasons[["JJA"]] <- t(SM.s.t[, which(substr(Year.s,6,8) == "JJA")])
 MS.seasons[["SON"]] <- t(SM.s.t[, which(substr(Year.s,6,8) == "SON")])
 MS.seasons <- lapply(MS.seasons, as.data.frame)
 
-save(MS.seasons,"MS.seasons",file="SM_seasonal_80-DJF_20-SON.Rdata")
+save(MS.seasons,"MS.seasons",file="./01_data/03_SM/SM_seasonal_80-DJF_20-SON.Rdata")
 
 Season <- c("DJF","MAM","JJA","SON")
 Mean.seasons <- list()
@@ -112,7 +114,7 @@ data <- rbind(Mean.s.t, CV.s.t)
 
 library(maps);library(mapdata); library(ggplot2)
 world <- map_data("world")
-Colom <- shapefile("../../South_America/hybas_sa_lev01-12_v1c/hybas_sa_lev03_v1c.shp")
+Colom <- shapefile("./01_data/hybas_sa_lev03_v1c.shp")
 at.m <- seq(0,max(Mean.s.t$P),length.out = 11)
 p1<-ggplot(Mean.s.t)+
   geom_raster(aes(x=x,y=y,fill=P))+facet_wrap(.~Season,ncol=4)+

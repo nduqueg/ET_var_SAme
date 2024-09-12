@@ -20,14 +20,14 @@ seasons <- c("DJF","MAM","JJA","SON")
 
 # load data ----
 
-AEN <- read.zoo(read.csv("00A_AtlEN_SST.csv"), index.column = 1); AEN <- AEN[Dm.ana]
-AMM <- read.zoo(read.csv("00A_AMM_deltaSST.csv"), index.column = 1); AMM <- AMM[Dm.ana]
-ELI <- read.zoo(read.csv("00A_ELI_SST.csv"), index.column = 1)#; ELI <- rollmean(ELI, k=3)
+AEN <- read.zoo(read.csv("./01_data/01_SSTindices/00A_AtlEN_SST.csv"), index.column = 1); AEN <- AEN[Dm.ana]
+AMM <- read.zoo(read.csv("./01_data/01_SSTindices/00A_AMM_deltaSST.csv"), index.column = 1); AMM <- AMM[Dm.ana]
+ELI <- read.zoo(read.csv("./01_data/01_SSTindices/00A_ELI_SST.csv"), index.column = 1)#; ELI <- rollmean(ELI, k=3)
 ELI <- ELI[Dm.ana]
-Nino34 <- read.zoo(read.csv("00A_N34_SST.csv"), index.column = 1); Nino34 <- Nino34[Dm.ana]
+Nino34 <- read.zoo(read.csv("./01_data/01_SSTindices/00A_N34_SST.csv"), index.column = 1); Nino34 <- Nino34[Dm.ana]
 
-TNA <- read.zoo(read.csv("00A_TNA_SST.csv"), index.column = 1); TNA <- TNA[Dm.ana]
-TSA <- read.zoo(read.csv("00A_TSA_SST.csv"), index.column = 1); TSA <- TSA[Dm.ana]
+TNA <- read.zoo(read.csv("./01_data/01_SSTindices/00A_TNA_SST.csv"), index.column = 1); TNA <- TNA[Dm.ana]
+TSA <- read.zoo(read.csv("./01_data/01_SSTindices/00A_TSA_SST.csv"), index.column = 1); TSA <- TSA[Dm.ana]
 
 ### seasonal distribution ----
 AEN.s <- aggregate(AEN[,"E.sst.AEN"], by=list(Season.y), FUN=mean)
@@ -100,12 +100,12 @@ for (i in seasons){
   TSA.std[,i] <- scale(TSA.p[[i]][,1])
 }
 sha.test <- do.call(rbind.data.frame,sha.test)
-write.csv(sha.test,file="./Indices_distribution/Indices_shapiro_test.csv")
-write.csv(AMM.std, "../../../03_SpatioTemp/03_Composites/AMM_std_1980-2020_ERSST.csv")
-write.csv(ELI.std, "../../../03_SpatioTemp/03_Composites/ELI_std_1980-2020_ERSST.csv")
-write.csv(AEN.std, "../../../03_SpatioTemp/03_Composites/Atl3_std_1980-2020_ERSST.csv")
-write.csv(TNA.std, "../../../03_SpatioTemp/03_Composites/TNA_std_1980-2020_ERSST.csv")
-write.csv(TSA.std, "../../../03_SpatioTemp/03_Composites/TSA_std_1980-2020_ERSST.csv")
+write.csv(sha.test,file="./01_data/01_SSTindices/Indices_shapiro_test.csv")
+write.csv(AMM.std, "./01_data/01_SSTindices/AMM_std_1980-2020_ERSST.csv")
+write.csv(ELI.std, "./01_data/01_SSTindices/ELI_std_1980-2020_ERSST.csv")
+write.csv(AEN.std, "./01_data/01_SSTindices/Atl3_std_1980-2020_ERSST.csv")
+write.csv(TNA.std, "./01_data/01_SSTindices/TNA_std_1980-2020_ERSST.csv")
+write.csv(TSA.std, "./01_data/01_SSTindices/TSA_std_1980-2020_ERSST.csv")
 
 #### plotting -----
 
