@@ -1,3 +1,5 @@
+[![DOI](https://sandbox.zenodo.org/badge/851468812.svg)](https://handle.stage.datacite.org/10.5072/zenodo.182258)
+
 # Drivers of Evapotranspiration in tropical south America
 
 This repository contains the set of scripts to reproduce the results of the paper:
