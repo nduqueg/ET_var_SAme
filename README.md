@@ -1,4 +1,4 @@
-[![DOI](https://sandbox.zenodo.org/badge/851468812.svg)](https://handle.stage.datacite.org/10.5072/zenodo.182258)
+[![DOI](https://zenodo.org/badge/851468812.svg)](https://doi.org/10.5281/zenodo.15389245)
 
 # Drivers of Evapotranspiration in tropical south America
 
